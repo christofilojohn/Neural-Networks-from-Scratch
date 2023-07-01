@@ -1,18 +1,14 @@
 # Building a neural Network from scratch
-# This is a test to fit a sine wave with an array of neurons without an optimizer
+
+# based on: https://www.youtube.com/playlist?list=PLQVvvaa0QuDcjD5BAw2DxE6OF2tius3V3
 
 import numpy as np
+# pip3 install nnfs
+from nnfs.datasets.spiral import create_data
+# use a specific seed to have the same values
 np.random.seed(0)
 
-inputs = [0, 2, -1, 3.3, -2.7, 1.1, 2.2, -100]
-
-output = []
-tableX = [[1, 2, 3, 2.5],
-          [2.0, 5.0, -1.0, 2.0],
-          [-1.5, 2.7, 3.3, -0.8]]
-
-
-print(output)
+X, y = create_data(100, 3)
 
 class Layers_Dense:
     def __init__(self,n_inputs,n_neurons):
@@ -21,9 +17,17 @@ class Layers_Dense:
     def forward(self,inputs):
         self.output = np.dot(inputs, self.weights) + self.biases
 
-layer1 = Layers_Dense(4,5)
-layer2 = Layers_Dense(5,2)
+class Activation_ReLU:
+    def forward(self,inputs):
+        # oneliner ReLU
+        self.output = np.maximum(0, inputs)
 
-layer1.forward(tableX)
-layer2.forward(layer1.output)
-print(layer2.output)
+# We have 2 unique features that describe our dataset (X, y) so n_inputs = 2
+layer1 = Layers_Dense(2,5)
+layer1.forward(X)
+activation1 = Activation_ReLU()
+activation1.forward(layer1.output)
+
+# Testing
+#print(layer1.output)
+print("Only positive data because of ReLU:\n",activation1.output)
